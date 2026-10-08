@@ -1,5 +1,5 @@
-const CACHE='daily-brief-shell-v3';
-const FILES=['./index.html','./style.css?v=3','./app.js?v=3','./engine.js?v=3','./sounds.js?v=3','./task-motion.js?v=3','./icon.svg','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/maskable-512.png','./icons/apple-touch-icon.png','./audio/complete.wav','./audio/tap.wav'];
+const CACHE='daily-brief-shell-v4';
+const FILES=['./index.html','./style.css?v=4','./app.js?v=4','./engine.js?v=4','./sounds.js?v=4','./task-motion.js?v=4','./account.js','./cloud-store.js','./delight.js','./supabase-config.js','./vendor/supabase.js','./icon.svg','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/maskable-512.png','./icons/apple-touch-icon.png','./audio/complete.wav','./audio/tap.wav'];
 const base=self.registration.scope;
 const shellURL=new URL('./index.html',base).href;
 const allowedPaths=new Set(FILES.map(file=>new URL(file,base).pathname));

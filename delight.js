@@ -1,0 +1,16 @@
+// An original little study companion. SVG stays sharp and light on mobile.
+export function coach(pose='wave') {
+  return `<svg class="coach ${pose}" viewBox="0 0 200 220" aria-hidden="true"><ellipse cx="104" cy="206" rx="55" ry="9" fill="#292633" opacity=".09"/><g class="coach-body"><path d="M78 157 71 196m53-39 13 39" stroke="#302941" stroke-width="20" stroke-linecap="round"/><path d="m61 197 18 1m49-1 20 3" stroke="#eee9ff" stroke-width="13" stroke-linecap="round"/><path d="M67 102Q48 118 38 147" stroke="#9672dd" stroke-width="20" fill="none" stroke-linecap="round"/><circle cx="37" cy="151" r="10" fill="#bc784f"/><g class="coach-hand"><path d="M137 106q25-13 24-40" stroke="#9672dd" stroke-width="20" fill="none" stroke-linecap="round"/><path d="m160 64-3-15m5 15 7-13m-9 15 12-2" stroke="#bc784f" stroke-width="7" stroke-linecap="round"/><circle cx="161" cy="67" r="10" fill="#bc784f"/></g><path d="M65 102q37-20 73 0l6 64q-38 17-86 0Z" fill="#ac89ee" stroke="#302941" stroke-width="2"/><path d="M90 102q11 20 26 0" stroke="#ded0ff" stroke-width="6" fill="none"/><path d="M94 130h17m-8-8v17" stroke="#edfb93" stroke-width="4" stroke-linecap="round"/><path d="M96 81v18q10 9 17 0V81" fill="#ad6544"/><circle cx="103" cy="61" r="36" fill="#bc784f" stroke="#302941" stroke-width="2"/><path d="M69 57Q57 30 81 23q2-17 26-11 23-5 32 15 14 16-5 38l-4-22q-35 18-50-1Z" fill="#302941"/><path d="M82 55q5-4 10-1m21-1q6-3 10 1" stroke="#302941" stroke-width="2.5" fill="none" stroke-linecap="round"/><g class="coach-eyes"><path d="M88 63v5m30-5v5" stroke="#302941" stroke-width="4" stroke-linecap="round"/></g><ellipse cx="78" cy="73" rx="6" ry="3" fill="#ee9b84"/><ellipse cx="126" cy="73" rx="6" ry="3" fill="#ee9b84"/><path d="M93 75q11 14 22-1" fill="#fff6df" stroke="#302941" stroke-width="2" stroke-linejoin="round"/></g><g class="coach-sparkles" fill="#efb449"><path d="m31 34 3 9 9 3-9 3-3 9-3-9-9-3 9-3Z"/><path d="m173 111 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z"/></g></svg>`;
+}
+export const googleMark = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285f4" d="M21.6 12.2c0-.7-.1-1.4-.2-2.1H12v4h5.4a4.6 4.6 0 0 1-2 3v2.5h3.3c1.9-1.8 2.9-4.3 2.9-7.4Z"/><path fill="#34a853" d="M12 22c2.7 0 5-.9 6.7-2.4l-3.3-2.5c-.9.6-2 .9-3.4.9-2.6 0-4.8-1.8-5.6-4.1H3v2.6A10 10 0 0 0 12 22Z"/><path fill="#fbbc05" d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3a10 10 0 0 0 0 9l3.4-2.6Z"/><path fill="#ea4335" d="M12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A9.7 9.7 0 0 0 12 2a10 10 0 0 0-9 5.5l3.4 2.6A6 6 0 0 1 12 6Z"/></svg>`;
+let timeout;
+export function showMilestone(title,subtitle,motion=true) {
+  let card = document.querySelector('#milestone');
+  if(!card) { card=document.createElement('aside');card.id='milestone';card.setAttribute('role','status');card.setAttribute('aria-live','polite');document.body.append(card); }
+  clearTimeout(timeout);
+  card.className = `milestone ${motion?'':'still'}`;
+  card.innerHTML = `${coach('cheer')}<div><span class="eyebrow">PIP IS CHEERING YOU ON</span><strong></strong><p></p></div><button class="milestone-close" aria-label="Dismiss celebration">×</button>`;
+  card.querySelector('strong').textContent=title;card.querySelector('p').textContent=subtitle;
+  card.querySelector('button').onclick=()=>card.remove();
+  timeout=setTimeout(()=>card.remove(),6500);
+}

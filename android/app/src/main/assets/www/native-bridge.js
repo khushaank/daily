@@ -4,7 +4,7 @@
 
   const key = 'my-daily-brief-v1';
   try {
-    const saved = api.read();
+    const saved = api.readAccount ? api.readAccount('guest') : api.read();
     if (saved) localStorage.setItem(key, saved);
   } catch (_) {
     // The existing browser copy remains available if the private file cannot be read.
@@ -12,7 +12,8 @@
 
   const setItem = Storage.prototype.setItem;
   Storage.prototype.setItem = function (name, value) {
-    if (name === key && !api.save(String(value))) throw new Error('Could not save the private data file');
+    const scope=name===key?'guest':name.startsWith('my-daily-brief:account:')?name.slice('my-daily-brief:account:'.length):null;
+    if(this===localStorage&&scope&&!(api.saveAccount?api.saveAccount(scope,String(value)):api.save(String(value))))throw new Error('Could not save the private data file');
     return setItem.call(this, name, value);
   };
 
@@ -43,11 +44,10 @@
     reminders.dataset.nativeAction = 'reminders';
     reminders.setAttribute('role', 'switch');
     reminders.innerHTML = '<svg aria-hidden="true"><use href="#i-clock"></use></svg><span class="menu-copy"><strong>Task reminders</strong><small>Notify me when a timed task begins</small></span><span class="switch"></span>';
-    document.querySelectorAll('.menu-card')[1].append(reminders);
+    document.querySelector('[data-action="sound"]').closest('.menu-card').append(reminders);
     window.dailyNativeRemindersChanged(api.remindersEnabled(), false);
 
-    document.querySelector('.local-note').textContent =
-      'Your plan is saved in a private file on this phone. Save a backup to a location you choose before changing phones or uninstalling. Nothing is automatically uploaded or synced.';
+
   }
 
   window.dailyNativeRemindersChanged = (enabled, denied) => {

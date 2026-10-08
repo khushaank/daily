@@ -36,6 +36,8 @@ public class MainActivity extends Activity {
     private static final int WEB_FILE = 10, EXPORT_FILE = 11, RESTORE_FILE = 12, NOTIFICATION_PERMISSION = 13;
     private WebView webView;
     private ValueCallback<Uri[]> fileCallback;
+    private String authCallback;
+    private boolean authReady;
 
     @Override @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,8 @@ public class MainActivity extends Activity {
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
         webView.setBackgroundColor(Color.rgb(248, 247, 242));
         webView.addJavascriptInterface(new NativeBridge(), "DailyNative");
         webView.setWebViewClient(new WebViewClientCompat() {
@@ -87,7 +91,28 @@ public class MainActivity extends Activity {
         setContentView(webView);
         Reminders.createChannel(this);
         Reminders.sync(this);
+        captureAuth(getIntent());
         webView.loadUrl(START);
+    }
+
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        captureAuth(intent);
+        deliverAuth();
+    }
+
+    private void captureAuth(Intent intent) {
+        Uri uri = intent == null ? null : intent.getData();
+        if (uri != null && "mydailybrief".equals(uri.getScheme()) && "auth".equals(uri.getHost())
+            && "/callback".equals(uri.getPath())) authCallback = uri.toString();
+    }
+
+    private void deliverAuth() {
+        if (!authReady || authCallback == null) return;
+        String callback = authCallback;
+        authCallback = null;
+        webView.evaluateJavascript("window.dailyAuthCallback(" + org.json.JSONObject.quote(callback) + ")", null);
     }
 
     @Override @SuppressWarnings("deprecation")
@@ -128,6 +153,7 @@ public class MainActivity extends Activity {
                     .setPositiveButton("Restore", (dialog, which) -> {
                         if (DailyStore.write(this, json)) {
                             Reminders.sync(this);
+                            authReady = false;
                             webView.loadUrl(START);
                             Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show();
                         } else {
@@ -173,6 +199,37 @@ public class MainActivity extends Activity {
     }
 
     private final class NativeBridge {
+        @JavascriptInterface public void authReady() {
+            runOnUiThread(() -> { authReady = true; deliverAuth(); });
+        }
+
+        @JavascriptInterface public void openAuth(String url) {
+            Uri uri = Uri.parse(url);
+            if (!"https".equals(uri.getScheme()) || uri.getHost() == null
+                || !"/auth/v1/authorize".equals(uri.getPath())
+                || !"google".equals(uri.getQueryParameter("provider"))) return;
+            runOnUiThread(() -> {
+                try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
+                catch (Exception error) { Toast.makeText(MainActivity.this, "Install a browser to sign in with Google", Toast.LENGTH_LONG).show(); }
+            });
+        }
+
+        @JavascriptInterface public String selectAccount(String scope) {
+            String saved = DailyStore.select(MainActivity.this, scope);
+            Reminders.sync(MainActivity.this);
+            return saved;
+        }
+
+        @JavascriptInterface public String readAccount(String scope) {
+            return DailyStore.read(MainActivity.this, scope);
+        }
+
+        @JavascriptInterface public boolean saveAccount(String scope, String json) {
+            boolean saved = DailyStore.write(MainActivity.this, scope, json);
+            if (saved && scope.equals(DailyStore.scope(MainActivity.this)) && Reminders.enabled(MainActivity.this)) Reminders.sync(MainActivity.this);
+            return saved;
+        }
+
         @JavascriptInterface public String read() { return DailyStore.read(MainActivity.this); }
 
         @JavascriptInterface public boolean save(String json) {

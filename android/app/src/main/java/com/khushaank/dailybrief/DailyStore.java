@@ -15,12 +15,30 @@ final class DailyStore {
     private static final int MAX_BYTES = 8 * 1024 * 1024;
     private DailyStore() {}
 
-    private static AtomicFile file(Context context) {
-        return new AtomicFile(new File(context.getFilesDir(), "my-daily-brief.json"));
+    static String scope(Context context) {
+        return context.getSharedPreferences("daily-account", Context.MODE_PRIVATE).getString("scope", "guest");
     }
 
-    static synchronized String read(Context context) {
-        try (FileInputStream input = file(context).openRead();
+    static boolean validScope(String scope) {
+        return "guest".equals(scope) || (scope != null && scope.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"));
+    }
+
+    static synchronized String select(Context context, String scope) {
+        if (!validScope(scope)) throw new IllegalArgumentException("Invalid account");
+        context.getSharedPreferences("daily-account", Context.MODE_PRIVATE).edit().putString("scope", scope).commit();
+        return read(context, scope);
+    }
+
+    private static AtomicFile file(Context context, String scope) {
+        if (!validScope(scope)) throw new IllegalArgumentException("Invalid account");
+        String name = "guest".equals(scope) ? "my-daily-brief.json" : "my-daily-brief-" + scope + ".json";
+        return new AtomicFile(new File(context.getFilesDir(), name));
+    }
+
+    static String read(Context context) { return read(context, scope(context)); }
+
+    static synchronized String read(Context context, String scope) {
+        try (FileInputStream input = file(context, scope).openRead();
              ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[8192];
             int count;
@@ -46,9 +64,11 @@ final class DailyStore {
         }
     }
 
-    static synchronized boolean write(Context context, String json) {
-        if (!valid(json)) return false;
-        AtomicFile target = file(context);
+    static boolean write(Context context, String json) { return write(context, scope(context), json); }
+
+    static synchronized boolean write(Context context, String scope, String json) {
+        if (!validScope(scope) || !valid(json)) return false;
+        AtomicFile target = file(context, scope);
         FileOutputStream output = null;
         try {
             output = target.startWrite();
