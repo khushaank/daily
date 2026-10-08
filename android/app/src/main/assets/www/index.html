@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f7f2"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Daily Brief"><link rel="manifest" href="./manifest.webmanifest" crossorigin="use-credentials"><link rel="apple-touch-icon" href="./icons/apple-touch-icon.png"><meta name="description" content="Small steps, big days. Your playful daily study plan and habit companion.">
+  <title>My Daily Brief — make today count</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="stylesheet" href="./style.css?v=3">
+</head>
+<body>
+  <svg class="svg-defs" aria-hidden="true"><defs>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="4"/><path d="M7 3v4m10-4v4M3 11h18m-13 4h1m6 0h1"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20S3 15 3 8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 7-9 12-9 12Z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v15"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <linearGradient id="flame-heat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb52e"/><stop offset=".55" stop-color="#ff861d"/><stop offset="1" stop-color="#ec531b"/></linearGradient><symbol id="i-flame" viewBox="0 0 24 24"><path d="M13 1.8c2.4 6 6.4 6.4 6.4 12a7.4 7.4 0 0 1-14.8 0c0-3.1 2.3-5.2 4.1-7.2 0 3.7 2.1 4.1 2.1 4.1s3.3-4.1 2.2-8.9Z" fill="url(#flame-heat)" stroke="#e56a18" stroke-width=".7"/><path d="M12.6 10.8c1.1 2.4 3.6 4.1 3.6 6.2a4.2 4.2 0 0 1-8.4 0c0-1.5 1-2.8 2.2-3.9.1 2 1.1 2.2 1.1 2.2s1.8-2.1 1.5-4.5Z" fill="#ffe581" stroke="none"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5Z"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 15v5h16v-5"/></symbol>
+    <symbol id="i-walk" viewBox="0 0 24 24"><circle cx="14" cy="4" r="2"/><path d="m7 12 3-4 5 2 3 4m-5-5-2 6-4 6m4-6 5 6"/></symbol>
+    <symbol id="i-chess" viewBox="0 0 24 24"><path d="M6 20h12l-2-5V9l2-2-3-4-7 5 1 3 3-1-3 5Zm0 2h12"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m15 4 5 5M4 20l5-1L21 7l-4-4L5 15Z"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 4 6 8H3v8h3l5 4Zm4 4a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+  </defs></svg>
+  <div class="app-shell">
+    <header class="topbar"><a href="#today" class="wordmark" aria-label="My Daily Brief home"><span class="brand-mark">✳</span><span>my daily brief<span class="brand-dot">.</span></span></a><div class="header-actions"><button class="avatar" data-action="navigate" data-view="more" aria-label="Open your preferences">YOU<span></span></button></div></header>
+    <main id="app"></main>
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button data-action="navigate" data-view="today"><svg><use href="#i-sun"/></svg><span>Today</span></button>
+      <button data-action="navigate" data-view="plan"><svg><use href="#i-calendar"/></svg><span>My plan</span></button>
+      <button data-action="navigate" data-view="habits"><svg><use href="#i-heart"/></svg><span>Habits</span></button>
+      <button data-action="navigate" data-view="more"><svg><use href="#i-grid"/></svg><span>More</span></button>
+    </nav>
+  </div>
+  <dialog id="modal"><div id="modal-body"></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div><div id="confetti" aria-hidden="true"></div>
+  <script src="./native-bridge.js"></script>
+  <script type="module" src="./app.js?v=3"></script>
+</body>
+</html>
